@@ -3,9 +3,32 @@
 A CARE frontend plug that adds a facility-scoped **People** directory and
 documents the `primary_facility` patient extension contract.
 
-> **Status: local development plug.** This lives inside `care_fe/apps/` for
-> local development and review only. It is *not* meant to be merged into the
-> `care_fe` repository — extract it into its own repo before shipping.
+> **Status: standalone plug repository.** This was extracted out of
+> `care_fe/apps/` and now lives on its own. It is *not* meant to be merged back
+> into the `care_fe` repository.
+
+## Deploying
+
+The plug is consumed as a federated remote, so it just needs to be built and
+served as static files.
+
+```
+npm ci && npm run build      # emits dist/assets/remoteEntry.js
+```
+
+On Cloudflare Pages, connect this repo and set **build command** `npm run build`
+and **output directory** `dist`. Cloudflare already serves
+`Access-Control-Allow-Origin: *`, so no `_headers` file is needed for the
+cross-origin module import.
+
+Point CARE at the deployed bundle with either
+
+```
+REACT_ENABLED_APPS=ohcnetwork/care_people_fe@care-people-fe.pages.dev/assets/remoteEntry.js
+```
+
+or a runtime `plug_config` entry whose `meta.url` is
+`https://care-people-fe.pages.dev/assets/remoteEntry.js`.
 
 ## What it does
 
